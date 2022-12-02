@@ -2,7 +2,7 @@ data Choice
     = Rock
     | Paper
     | Scissors
-    deriving (Eq, Show)
+    deriving (Eq)
 
 choiceValue :: Choice -> Int
 choiceValue Rock = 1
