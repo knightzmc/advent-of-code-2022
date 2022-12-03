@@ -1,5 +1,6 @@
 import Data.Char
 import Data.List
+import Data.List.Split
 
 priority :: Char -> Int
 priority c =
@@ -12,17 +13,11 @@ type Rucksack = (String, String)
 parseRucksack :: String -> Rucksack
 parseRucksack s = let middle = length s `div` 2 in splitAt middle s
 
-parseGroups :: [a] -> [(a, a, a)]
-parseGroups [] = []
-parseGroups xs =
-    let ([a1, a2, a3], zs) = splitAt 3 xs
-     in (a1, a2, a3) : parseGroups zs
-
 common :: Rucksack -> String
 common = nub . uncurry intersect
 
-findBadge :: (String, String, String) -> Char
-findBadge (a, b, c) = head $ nub (a `intersect` b `intersect` c)
+findBadge :: [String] -> Char
+findBadge strings = head $ nub (foldr1 intersect strings)
 
 main :: IO ()
 main = do
@@ -32,6 +27,6 @@ main = do
     print (sum (priority <$> commons))
 
     -- part 2
-    let groups = parseGroups c
+    let groups = chunksOf 3 c
     let badges = findBadge <$> groups
     print (sum (priority <$> badges))
