@@ -1,6 +1,6 @@
-import Control.Monad
+import Control.Monad ( join )
 import Data.Bifunctor (Bifunctor (bimap), second)
-import Data.List
+import Data.List ( elemIndex )
 import Data.Maybe (fromJust)
 
 data Range = Range Int Int
@@ -33,3 +33,9 @@ main = do
     let pairs = parsePair <$> c
     print (length (filter contains pairs))
     print (length (filter overlaps pairs))
+
+
+
+
+
+    
