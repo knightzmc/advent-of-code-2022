@@ -18,9 +18,6 @@ data Stack a
     = Empty
     | Snoc (Stack a) a
 
-instance Show a => Show (Stack a) where
-    show = show . toList
-
 sHead :: Stack a -> a
 sHead Empty = error "Empty stack"
 sHead (Snoc f a) = a
@@ -88,6 +85,7 @@ block = realBlock <|> blank
         count 3 (char ' ')
         pure Nothing
 
+blocks :: Parser [Maybe Char]
 blocks = sepBy1 block (char ' ')
 
 move :: Parser Instruction
@@ -105,9 +103,7 @@ blocksToStacks grid =
      in let stacks = toStack . catMaybes <$> x
          in IntMap.fromAscList (zip [1 ..] stacks)
 
--- blocks
-
--- file :: Parser (Stacks, [Instruction])
+file :: Parser (Stacks, [Instruction])
 file = do
     stacks <- manyTill (blocks <* newline) (try $ string " 1")
     let x = blocksToStacks stacks
@@ -116,6 +112,7 @@ file = do
     insts <- sepBy1 move newline
     pure (x, insts)
 
+main :: IO ()
 main = do
     c <- readFile "input.txt"
     case parse file "" c of
