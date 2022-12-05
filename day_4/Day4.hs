@@ -1,9 +1,10 @@
-import Control.Monad ( join )
+import Control.Monad (join)
 import Data.Bifunctor (Bifunctor (bimap), second)
-import Data.List ( elemIndex )
+import Data.List (elemIndex)
 import Data.Maybe (fromJust)
 
 data Range = Range Int Int
+type Pair = (Range, Range)
 
 contains :: Pair -> Bool
 contains (Range f1 l1, Range f2 l2) =
@@ -12,8 +13,6 @@ contains (Range f1 l1, Range f2 l2) =
 overlaps :: Pair -> Bool
 overlaps (Range f1 l1, Range f2 l2) = l1 >= f2 && f1 <= l2
 
-type Pair = (Range, Range)
-
 splitOn :: Char -> String -> (String, String)
 splitOn c s = second tail $ splitAt (fromJust $ c `elemIndex` s) s
 
@@ -21,11 +20,9 @@ mapBoth :: Bifunctor p => (c -> d) -> p c c -> p d d
 mapBoth = join bimap
 
 parsePair :: String -> Pair
-parsePair s =
-    let parts = splitOn ',' s
-     in mapBoth parseRange parts
+parsePair = mapBoth parseRange . splitOn ','
   where
-    parseRange s' = uncurry Range $ mapBoth read $ splitOn '-' s'
+    parseRange = uncurry Range . mapBoth read . splitOn '-'
 
 main :: IO ()
 main = do
@@ -33,9 +30,3 @@ main = do
     let pairs = parsePair <$> c
     print (length (filter contains pairs))
     print (length (filter overlaps pairs))
-
-
-
-
-
-    
